@@ -1,6 +1,10 @@
+package DBClasses;
+
+import Helpers.CreatableFromList;
+
 import java.util.List;
 
-public class User {
+public class User implements CreatableFromList {
     private final int  author_id;
     private final String name;
     private final String login;

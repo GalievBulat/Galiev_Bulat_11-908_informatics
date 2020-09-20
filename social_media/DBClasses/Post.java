@@ -1,7 +1,10 @@
-import java.util.ArrayList;
+package DBClasses;
+
+import Helpers.CreatableFromList;
+
 import java.util.List;
 
-public class Post {
+public class Post implements CreatableFromList {
     private final int post_id;
     private final int author_id;
     private final String text;

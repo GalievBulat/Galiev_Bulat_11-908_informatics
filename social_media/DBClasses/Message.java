@@ -1,6 +1,10 @@
+package DBClasses;
+
+import Helpers.CreatableFromList;
+
 import java.util.List;
 
-public class Message{
+public class Message implements CreatableFromList {
     private final int author_id;
     private final int receiver_id;
     private final String text;

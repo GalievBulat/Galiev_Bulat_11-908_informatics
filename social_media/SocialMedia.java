@@ -1,7 +1,8 @@
+import Helpers.QueryProcessing;
+
 import java.io.*;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+
 
 public class SocialMedia {
     public static void main(String[] args) {
@@ -13,10 +14,15 @@ public class SocialMedia {
             try(fOS){
                 QueryProcessing.commandProcessing(command,fOS);
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("FileNotFoundException!");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("IOException!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Illegal argument!");
+        } catch (Exception e) {
+            System.out.println("Exception!");
         }
-
         sc.close();
     }
 }
