@@ -8,10 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FindSth {
-    private FindSth(){
+public final class FindSth implements InstanceCreating {
+    public FindSth(){
     }
-    static public <T extends CreatableFromList> T getMe(int id, String filename, int attributes, Class<T> tClass)
+    public <T extends CreatableFromList> T getMe(int id, String filename, int attributes, Class<T> tClass)
             throws FileNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         BufferedReader fIS = new BufferedReader(new FileReader(filename));
         List<String> lines = fIS.lines().skip((attributes+1)*id+1).limit(attributes).collect(Collectors.toList());
