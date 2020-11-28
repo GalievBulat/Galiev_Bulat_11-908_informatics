@@ -1,22 +1,29 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ClientConnection {
     public static void main(String[] args) {
+        System.out.println("Introduce yourself: ");
         Client client = new Client(new Scanner(System.in).nextLine());
-        try(client) {
-            try {
-                System.out.println("you are connected");
-                System.out.println(client.getLine() + " connected");
-                while (!client.socket.isClosed()) {
-                    client.sendMessage(new Scanner(System.in).nextLine());
-                    System.out.println(client.getLine());
-                }
-            }finally {
-                client.stop();
+        BufferedReader scanner = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (!client.socket.isClosed()) {
+                if (scanner.ready())
+                    client.sendMessage(scanner.readLine());
+                System.out.print(client.getUpdates());
             }
         } catch (IOException e) {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
+        } catch (RuntimeException e){
+            e.printStackTrace();
+            try {
+                client.close();
+            } catch (IOException ignore) { }
         }
+
+
     }
 }

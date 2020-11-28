@@ -3,36 +3,37 @@ import java.net.Socket;
 import java.util.stream.Collectors;
 
 public class Client implements AutoCloseable {
-    private final static String HOST = "localhost";
-    private final static int PORT = 9999;
     private String userName;
-     final Socket socket;
-    private final Reader reader;
+    final Socket socket;
+    private final BufferedReader reader;
     private final BufferedWriter writer;
 
-    private final LinesReader helper = new LinesReader();
+    private final IOHandler helper = new IOHandler();
     public Client(String userName){
         try {
-            socket = new Socket(HOST,PORT);
+            socket = new Socket(Meta.HOST,Meta.PORT);
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.userName= userName;
-            writer.write("/init userName:"+ userName + "\n");
-            writer.flush();
-            reader = new InputStreamReader(socket.getInputStream());
+            helper.writeLine(writer,"/init userName:"+ userName + "\n");
+            reader =new BufferedReader( new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
     public void sendMessage(String message){
+        helper.writeLine(writer,message);
+    }
+    public String getUpdates(){
         try {
-            writer.write(message + "\n");
-            writer.flush();
-        } catch (IOException e) {
+            StringBuilder res = new StringBuilder();
+            while (socket.getInputStream().available()!=0) {
+                 res.append(helper.readLine(reader));
+                 res.append("\n");
+            }
+            return res.toString();
+        }catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-    public String getLine(){
-        return helper.readLine(reader);
     }
 
     @Override
@@ -42,12 +43,6 @@ public class Client implements AutoCloseable {
         socket.close();
     }
     public void stop(){
-        try {
-            System.out.println("stop");
-            writer.write("/stop");
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        helper.writeLine(writer,"/stop");
     }
 }
