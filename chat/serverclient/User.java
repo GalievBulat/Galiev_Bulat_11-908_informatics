@@ -1,4 +1,4 @@
-import java.util.Arrays;
+package serverclient;
 
 public class User {
     private String name;

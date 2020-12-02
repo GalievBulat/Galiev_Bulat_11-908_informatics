@@ -1,19 +1,13 @@
-import java.io.*;
-import java.nio.Buffer;
+package serverclient;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 public class IOHandler {
     public String readLine(BufferedReader reader) {
         try {
-            /*StringBuilder builder = new StringBuilder();
-            int ch ;
-            ch = reader.read();
-            while (ch!='\n'){
-                builder.append((char)ch);
-                ch = reader.read();
-            }
-            return builder.toString();*/
             return reader.readLine();
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,7 +1,11 @@
+package serverclient;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Server implements AutoCloseable {
@@ -41,6 +45,8 @@ public class Server implements AutoCloseable {
                     writer.write(getUsers().toString() + "\n");
                     writer.flush();*/
                     System.out.println(name + " initialized");
+                    helper.writeLine(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())),
+                            "server: Вы успешно вошли в систему! Выберите чат приступайте к диалогу");
                 } else {
                     client.close();
                     System.out.println("wrong greeting");
@@ -71,7 +77,7 @@ public class Server implements AutoCloseable {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (RuntimeException e){
-                System.out.println(e.getStackTrace());
+                e.printStackTrace();
                 try {
                     close();
                 } catch (IOException ignore) { }
@@ -80,9 +86,7 @@ public class Server implements AutoCloseable {
     }
     public void handleMessage(String message, User user){
         try {
-             if (user.getCurrentChat()!=-1){
-                chatRepository.getChat(user.getCurrentChat()).sendToChatters(user , message);
-            }else if (message.charAt(0) == '/') {
+            if (message.charAt(0) == '/') {
                 String[] strings = message.split(" ");
                 String command = strings[0];
                     if (command.equals("/stop"))
@@ -91,8 +95,12 @@ public class Server implements AutoCloseable {
                         close();
                     else if (command.equals("/enter")) {
                         chatRepository.getChat(Integer.parseInt(strings[1])).connect(user,sockets.get(user));
+                    }else if (command.equals("/leave")) {
+                        chatRepository.getChat(user.getCurrentChat()).disconnect(user);
                     }
-                }
+            } else if (user.getCurrentChat()!=-1)
+                chatRepository.getChat(user.getCurrentChat()).sendToChatters(user , message);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (RuntimeException e){

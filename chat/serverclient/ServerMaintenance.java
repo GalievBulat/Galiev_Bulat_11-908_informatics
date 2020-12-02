@@ -1,6 +1,6 @@
-import java.io.IOException;
+package serverclient;
 
-public class Main {
+public class ServerMaintenance {
     public static void main(String[] args){
         Server server = new Server();
         new Thread(server::handleConnections).start();
